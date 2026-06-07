@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Video Niche & Idea Generator</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b1320;
+      color: #e8eef7;
+      padding: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 { text-align: center; color: #ffffff; }
+    h2 {
+      color: #f5b342;
+      margin-top: 40px;
+      border-bottom: 1px solid #2c3a52;
+      padding-bottom: 6px;
+    }
+    .card {
+      background: #131e2f;
+      border: 1px solid #1f3147;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 15px;
+    }
+    select, input, button, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 6px;
+      border: 1px solid #2c3a52;
+      background: #0f1b2c;
+      color: #e8eef7;
+      font-size: 15px;
+    }
+    button {
+      background: #2196f3;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 14px;
+      border: none;
+    }
+    button:hover { background: #42a5f5; }
+    .breadcrumb { color: #9bb0c9; font-size: 14px; margin-top: 6px; }
+    .result {
+      margin-top: 16px;
+      background: #16263c;
+      border-left: 3px solid #f5b342;
+      padding: 14px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+    .hidden { display: none; }
+    label { display: block; margin-top: 12px; font-weight: bold; color: #cdd9e8; }
+    .keyword-results div {
+      background: #16263c;
+      border-left: 3px solid #2196f3;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+    #downloadBar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #0b1320;
+      border-bottom: 1px solid #1f3147;
+      padding: 8px 20px;
+      display: flex;
+      justify-content: flex-end;
+      z-index: 999;
+    }
+    #downloadBar button {
+      width: auto;
+      padding: 8px 18px;
+      margin-top: 0;
+      background: #f5b342;
+      color: #0b1320;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    #downloadBar button:hover { background: #ffd07a; }
+    body { padding-top: 60px; }
+  </style>
+</head>
+<body>
+
+  <div id="downloadBar">
+    <button onclick="downloadPage()">⬇ Download index.html</button>
+  </div>
+
+  <h1>🎬 AI Video Niche & Idea Generator</h1>
+  <p style="text-align:center;">Drill down from broad niche → sub-niche → micro-niche → high-potential video idea, then build an audience-matched offer.</p>
+
+  <!-- STEP 1: NICHE FUNNEL -->
+  <div class="card">
+    <h2>1. Find Your Sub-Niche Idea</h2>
+
+    <label for="nicheSelect">Pick a broad niche</label>
+    <select id="nicheSelect"></select>
+
+    <label for="subNicheSelect">Pick a sub-niche</label>
+    <select id="subNicheSelect"></select>
+
+    <label for="microNicheSelect">Pick a micro-niche</label>
+    <select id="microNicheSelect"></select>
+
+    <div class="breadcrumb" id="breadcrumb"></div>
+    <button id="ideaBtn">Generate Sub-Niche Idea</button>
+    <div class="result hidden" id="ideaResult"></div>
+  </div>
+
+  <!-- STEP 2: KEYWORD SEARCH -->
+  <div class="card">
+    <h2>2. Search Ideas by Keyword</h2>
+    <input type="text" id="keywordInput" placeholder="e.g. fitness, money, AI, parenting...">
+    <button id="keywordBtn">Search</button>
+    <div class="keyword-results" id="keywordResults"></div>
+  </div>
+
+  <!-- STEP 3: AUDIENCE / OFFER BUILDER -->
+  <div class="card">
+    <h2>3. Build Your Audience-Matched Offer</h2>
+    <label for="ageRange">Audience age range</label>
+    <select id="ageRange">
+      <option>13-17</option>
+      <option>18-24</option>
+      <option selected>25-34</option>
+      <option>35-44</option>
+      <option>45-60</option>
+      <option>60+</option>
+    </select>
+
+    <label for="demographic">Audience description (gender, lifestyle, income level, etc.)</label>
+    <input type="text" id="demographic" placeholder="e.g. busy working moms, side-hustle students...">
+
+    <label for="problem">What PROBLEM does this audience have?</label>
+    <textarea id="problem" rows="2" placeholder="e.g. They feel stuck in a 9-5 and want extra income"></textarea>
+
+    <label for="solution">What SOLUTION / transformation do you offer?</label>
+    <textarea id="solution" rows="2" placeholder="e.g. A step-by-step system to launch a side business in 30 days"></textarea>
+
+    <button id="offerBtn">Generate Offer & Video Angle</button>
+    <div class="result hidden" id="offerResult"></div>
+  </div>
+
+<script>
+  function downloadPage() {
+    const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  const data = {
+    "Fitness": {
+      "Home Workouts": {
+        "Busy Parents 15-Min Routines": [
+          "60-second 'kitchen counter' core workout for parents who can't leave the room",
+          "5-day no-equipment challenge filmed in real apartments, not gyms"
+        ],
+        "Post-Injury Recovery": [
+          "Day-in-the-life recovery routine after a common injury (knee/back) showing real progress"
+        ]
+      },
+      "Diet & Nutrition": {
+        "Budget Meal Prep for Students": [
+          "$5/day meal prep series filmed with receipts shown on screen for proof"
+        ],
+        "Gut Health Hacks": [
+          "30-second 'fix your bloating' tip series using grocery-store-only ingredients"
+        ]
+      }
+    },
+    "Money & Finance": {
+      "Side Hustles": {
+        "AI Tools for Beginners": [
+          "Step-by-step 'I made $X this week using only ChatGPT' video series with screen recordings",
+          "Comparison series: free AI tool vs paid AI tool, which actually earns more"
+        ],
+        "Reselling & Flipping": [
+          "Thrift-store-to-profit transformation reels showing buy price vs sale price"
+        ]
+      },
+      "Personal Budgeting": {
+        "Debt Payoff Journeys": [
+          "Weekly transparent 'paying off $30k in student debt' progress update series"
+        ]
+      }
+    },
+    "Parenting": {
+      "Toddler Routines": {
+        "Sleep Training Methods": [
+          "Real-time night routine showing exactly what worked, with timestamps overlayed"
+        ],
+        "Screen-Time Alternatives": [
+          "60-second boredom-buster activities using only items already in the house"
+        ]
+      },
+      "Co-Parenting": {
+        "Communication Scripts": [
+          "Roleplay skits showing 'what to say vs what not to say' during conflict moments"
+        ]
+      }
+    },
+    "Tech & AI": {
+      "AI Productivity": {
+        "Prompt Engineering for Creators": [
+          "Before/after series: bad prompt vs optimized prompt, same task, dramatic time saved"
+        ],
+        "Automation for Solopreneurs": [
+          "Screen-recorded 'I automated my entire business in a weekend' build-along series"
+        ]
+      },
+      "Gadget Reviews": {
+        "Budget Tech Under $50": [
+          "Honest 7-day test reviews of viral budget gadgets with real use-case footage"
+        ]
+      }
+    }
+  };
+
+  const nicheSelect = document.getElementById("nicheSelect");
+  const subNicheSelect = document.getElementById("subNicheSelect");
+  const microNicheSelect = document.getElementById("microNicheSelect");
+  const breadcrumb = document.getElementById("breadcrumb");
+  const ideaResult = document.getElementById("ideaResult");
+
+  function populate(select, items) {
+    select.innerHTML = "";
+    items.forEach(item => {
+      const opt = document.createElement("option");
+      opt.value = item;
+      opt.textContent = item;
+      select.appendChild(opt);
+    });
+  }
+
+  function refreshSubNiches() {
+    const niche = nicheSelect.value;
+    populate(subNicheSelect, Object.keys(data[niche]));
+    refreshMicroNiches();
+  }
+
+  function refreshMicroNiches() {
+    const niche = nicheSelect.value;
+    const subNiche = subNicheSelect.value;
+    populate(microNicheSelect, Object.keys(data[niche][subNiche]));
+    updateBreadcrumb();
+  }
+
+  function updateBreadcrumb() {
+    breadcrumb.textContent =
+      `Path: ${nicheSelect.value} → ${subNicheSelect.value} → ${microNicheSelect.value}`;
+  }
+
+  populate(nicheSelect, Object.keys(data));
+  refreshSubNiches();
+
+  nicheSelect.addEventListener("change", refreshSubNiches);
+  subNicheSelect.addEventListener("change", refreshMicroNiches);
+  microNicheSelect.addEventListener("change", updateBreadcrumb);
+
+  document.getElementById("ideaBtn").addEventListener("click", () => {
+    const niche = nicheSelect.value;
+    const subNiche = subNicheSelect.value;
+    const microNiche = microNicheSelect.value;
+    const ideas = data[niche][subNiche][microNiche];
+    const idea = ideas[Math.floor(Math.random() * ideas.length)];
+
+    ideaResult.classList.remove("hidden");
+    ideaResult.innerHTML = `
+      <strong>🎯 High-potential micro-niche idea:</strong><br>
+      <em>${niche} → ${subNiche} → ${microNiche}</em><br><br>
+      "${idea}"<br><br>
+      <strong>Why this can scale to 6-7 figures:</strong> Micro-niches like this have lower competition,
+      a highly specific audience that's easy to target with ads, and a clear path to selling
+      a paid product/course/coaching offer once you've built trust through consistent content.
+    `;
+  });
+
+  document.getElementById("keywordBtn").addEventListener("click", () => {
+    const keyword = document.getElementById("keywordInput").value.trim().toLowerCase();
+    const resultsBox = document.getElementById("keywordResults");
+    resultsBox.innerHTML = "";
+
+    if (!keyword) {
+      resultsBox.innerHTML = "<div>Type a keyword first.</div>";
+      return;
+    }
+
+    let matches = [];
+    for (const niche in data) {
+      for (const subNiche in data[niche]) {
+        for (const microNiche in data[niche][subNiche]) {
+          data[niche][subNiche][microNiche].forEach(idea => {
+            const haystack = `${niche} ${subNiche} ${microNiche} ${idea}`.toLowerCase();
+            if (haystack.includes(keyword)) {
+              matches.push(`<strong>${niche} → ${subNiche} → ${microNiche}</strong><br>${idea}`);
+            }
+          });
+        }
+      }
+    }
+
+    if (matches.length === 0) {
+      resultsBox.innerHTML = "<div>No matches found. Try a broader keyword like 'money', 'fitness', or 'AI'.</div>";
+    } else {
+      matches.forEach(m => {
+        const div = document.createElement("div");
+        div.innerHTML = m;
+        resultsBox.appendChild(div);
+      });
+    }
+  });
+
+  document.getElementById("offerBtn").addEventListener("click", () => {
+    const age = document.getElementById("ageRange").value;
+    const demo = document.getElementById("demographic").value || "your target audience";
+    const problem = document.getElementById("problem").value || "a problem they face daily";
+    const solution = document.getElementById("solution").value || "a clear transformation you provide";
+    const box = document.getElementById("offerResult");
+
+    box.classList.remove("hidden");
+    box.innerHTML = `
+      <strong>🎥 Suggested Video Angle:</strong><br>
+      "Hey ${demo} (ages ${age}) — if you're dealing with ${problem.toLowerCase()},
+      here's exactly how ${solution.toLowerCase()}. Watch till the end for the full breakdown."<br><br>
+
+      <strong>💰 Suggested Offer Structure:</strong><br>
+      1. Free hook video that names the ${problem.toLowerCase()} specifically so they feel seen.<br>
+      2. Mid-funnel content that demonstrates the ${solution.toLowerCase()} in action (case study / proof).<br>
+      3. Paid offer (course, coaching, template, or done-for-you service) priced for the
+      ${age} ${demo} audience — positioned as the fastest path from "${problem.toLowerCase()}"
+      to "${solution.toLowerCase()}".<br><br>
+
+      <strong>📌 Tip:</strong> Repurpose this single video idea into 5-10 short clips
+      (hook variations, proof clips, objection-handling clips) to multiply reach without
+      multiplying production time.
+    `;
+  });
+</script>
+</body>
+</html>
