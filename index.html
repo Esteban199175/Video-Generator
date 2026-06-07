@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AI Video Short Generator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #1e1e2e;
+        color: white;
+        text-align: center;
+        padding: 40px;
+      }
+      button {
+        background: #ff4757;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      #output {
+        margin-top: 20px;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎬 AI Video Short Idea Generator</h1>
+    <p>Click the button to generate a short video script idea for YouTube.</p>
+    <button id="generateBtn">Generate Idea</button>
+    <div id="output"></div>
+
+    <script>
+      const ideas = [
+        "A day in the life of an AI learning to paint",
+        "Top 5 mistakes new YouTubers make",
+        "How robots will change cooking forever",
+        "60 seconds of mind-blowing space facts"
+      ];
+
+      function generateVideoIdea() {
+        const randomIndex = Math.floor(Math.random() * ideas.length);
+        document.getElementById("output").textContent = ideas[randomIndex];
+      }
+
+      document.getElementById("generateBtn").addEventListener("click", generateVideoIdea);
+    </script>
+  </body>
+</html>
