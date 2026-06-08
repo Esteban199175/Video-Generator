@@ -91,9 +91,60 @@
     }
     #downloadBar button:hover { background: #ffd07a; }
     body { padding-top: 60px; }
+    #passwordOverlay {
+      position: fixed;
+      inset: 0;
+      background: #0b1320;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #passwordOverlay h2 {
+      color: #f5b342;
+      margin-bottom: 20px;
+      border: none;
+    }
+    #passwordOverlay input {
+      width: 280px;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #2c3a52;
+      background: #0f1b2c;
+      color: #e8eef7;
+      font-size: 16px;
+      text-align: center;
+    }
+    #passwordOverlay button {
+      width: 280px;
+      margin-top: 12px;
+      padding: 12px;
+      background: #2196f3;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    #passwordOverlay button:hover { background: #42a5f5; }
+    #passwordError {
+      color: #ff4757;
+      margin-top: 10px;
+      font-size: 14px;
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+  <div id="passwordOverlay">
+    <h2>🔒 Private Access</h2>
+    <input type="password" id="passwordInput" placeholder="Enter password" />
+    <button onclick="checkPassword()">Enter</button>
+    <div id="passwordError">Incorrect password. Try again.</div>
+  </div>
 
   <div id="downloadBar">
     <button onclick="downloadPage()">⬇ Download index.html</button>
@@ -155,6 +206,20 @@
   </div>
 
 <script>
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    if (input === "Don'tAbuse123") {
+      document.getElementById("passwordOverlay").style.display = "none";
+    } else {
+      document.getElementById("passwordError").style.display = "block";
+      document.getElementById("passwordInput").value = "";
+    }
+  }
+
+  document.getElementById("passwordInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") checkPassword();
+  });
+
   function downloadPage() {
     const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
     const a = document.createElement('a');
